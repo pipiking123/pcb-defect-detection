@@ -1,0 +1,24 @@
+# Trained weights — stored on OneDrive, not git (too large)
+*.pt
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Raw dataset clone — too large for git
+DeepPCB/
+
+# Archives
+*.zip
+
+# Environment secrets
+.env
+
+# Ultralytics auto-generated training output (separate from our results/ folder)
+runs/
+
+# Logs
+*.log
