@@ -25,13 +25,13 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 | Lecturer | Ashwaq Qasem |
 | Target company | ViTrox Corporation (Malaysia) |
 | Deadline | **3 July 2026, 6:00 PM Malaysia time** |
-| Today's date | _UPDATE EVERY DAY_ |
-| Days remaining | _UPDATE EVERY DAY_ |
-| Current phase | **Phase 1 — Setup** |
-| Repo URL | _add after `git init` and GitHub push_ |
-| Latest git commit | _UPDATE AFTER EACH PUSH_ |
+| Today's date | Tuesday, 2026-06-16 |
+| Days remaining | 17 |
+| Current phase | **Phase 1 — Setup (project Day 1)** |
+| Repo URL | https://github.com/pipiking123/pcb-defect-detection |
+| OneDrive folder | C:\Users\User\OneDrive - 厦门大学(马来西亚分校)\AIT304_PCB_Final |
+| Latest git commit | 2c9c565144126fec6cc6c67a4c5b44130b2df3fe: Day 1 init |
 | Kaggle notebook URL | _add after creation_ |
-| OneDrive folder URL | _add after creation_ |
 
 ---
 
@@ -39,11 +39,11 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 
 > **Update this section every night before sleep. Takes 2 minutes.**
 
-- **Last completed:** _e.g. "DeepPCB cloned, dataset uploaded to Kaggle private dataset"_
-- **In progress:** _e.g. "Writing convert_dataset.py"_
-- **Next action (tomorrow 1st thing):** _e.g. "Run sanity_check.py and verify boxes wrap defects"_
-- **Active blockers:** _e.g. "none" or "Kaggle GPU quota delayed by 6 hrs — wait until 2 PM"_
-- **GPU hours used this week:** _e.g. "3.2 / 30"_
+- **Last completed:** GitHub repo created, initial commit pushed, project scaffolding live
+- **In progress:** nothing — Day 1 work complete
+- **Next action (tomorrow 1st thing):** Phase 2 literature review — Cowork to populate Zotero from the 9 verified references in Blueprint §2
+- **Active blockers:** Kaggle phone verification failing — must resolve before Day 4 training. Fallback option: switch to Google Colab if Kaggle remains blocked. Not urgent for Days 1–3.
+- **GPU hours used this week:** 0 / 30
 
 ---
 
@@ -51,13 +51,13 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 
 ### Phase 1 — Setup (Day 1, today)
 - [ ] Kaggle account created + phone verified
-- [ ] GitHub repo created: `king/pcb-defect-detection` (private)
-- [ ] Local project folder initialized at `/home/king/pcb_project`
-- [ ] DeepPCB cloned from `github.com/tangsanli5201/DeepPCB`
+- [x] GitHub repo created: `pipiking123/pcb-defect-detection` (private)
+- [x] Local project folder initialized
+- [x] DeepPCB cloned from `github.com/tangsanli5201/DeepPCB`
 - [ ] DeepPCB uploaded to Kaggle as private dataset
 - [ ] Zotero library created with 9 verified references (see Blueprint §2)
-- [ ] OneDrive folder created for final deliverables
-- [ ] PROJECT_STATE.md + DECISIONS.md + WORKFLOW.md committed to repo
+- [x] OneDrive folder created for final deliverables
+- [x] PROJECT_STATE.md + DECISIONS.md + WORKFLOW.md committed to repo
 
 ### Phase 2 — Literature Review (Day 2)
 - [ ] All 9 papers downloaded into Zotero
