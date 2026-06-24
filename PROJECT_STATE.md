@@ -30,7 +30,7 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 | Current phase | **Day 3 complete — visual gate cleared; Phase 4 (Colab smoke test) is tomorrow's work** |
 | Repo URL | https://github.com/pipiking123/pcb-defect-detection |
 | OneDrive folder | C:\Users\User\OneDrive - 厦门大学(马来西亚分校)\AIT304_PCB_Final |
-| Latest git commit | PLACEHOLDER |
+| Latest git commit | deaea71 |
 | Kaggle notebook URL | _add after creation_ |
 
 ---
@@ -64,7 +64,7 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 - d14f911 — Kaggle→Colab reconciliation + D-007 amendment
 - d09f513 — sanity checker
 - 36331a2 — D-017 logged + state update + .gitignore
-- PLACEHOLDER — Day 3 close-out, visual gate cleared
+- deaea71 — Day 3 close-out, visual gate cleared
 
 ---
 
