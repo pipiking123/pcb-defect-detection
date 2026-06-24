@@ -251,6 +251,20 @@ are unaffected.
 
 ---
 
+## D-017 | 2026-06-24 | Accept duplicate `build_class_index()` scan in sanity_check.py
+**Decision:** `src/data/sanity_check.py` calls `build_class_index()` twice during a single run — once for class-stratified sampling and once for the post-sampling coverage gate. The duplicate scan is intentional and not refactored away.
+
+**Why:**
+1. Cost is negligible: the scan walks ~1500 small text files, well under a second. `sanity_check.py` runs a handful of times over the project lifetime; this is not a hot path.
+2. The two callers have semantically distinct purposes (selection vs validation). Sharing state would require passing the index through several function boundaries or stashing it in module-level state, trading clarity for non-measurable speedup.
+3. The redundancy provides mild belt-and-braces: if `build_class_index()` ever produced inconsistent results between the two scans (filesystem mutation mid-run, race condition, encoding edge case), the coverage gate would catch the inconsistency rather than silently agreeing with the sampler.
+
+**Source:** Codex re-review of Day 3 P2, verdict APPROVE WITH MINOR FIXES; the "minor fix" was the re-scan elimination, intentionally not applied per this decision. Same pattern as D-016.
+
+**Reversible?** Yes, trivially — pass the index from `select_images()` to the coverage check function if ever desired.
+
+---
+
 ## D-NNN | YYYY-MM-DD | <next decision template>
 **Decision:**
 **Why:**

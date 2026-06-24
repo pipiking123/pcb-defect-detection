@@ -11,6 +11,9 @@ __pycache__/
 # Raw dataset clone — too large for git
 DeepPCB/
 
+# Converted dataset output — too large for git; reproduced by convert_dataset.py
+datasets/
+
 # Archives
 *.zip
 

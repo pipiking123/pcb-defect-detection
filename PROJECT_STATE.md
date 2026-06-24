@@ -27,10 +27,10 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 | Deadline | **3 July 2026, 6:00 PM Malaysia time** |
 | Today's date | Tuesday, 2026-06-24 |
 | Days remaining | 9 |
-| Current phase | **Phase 3 — Day 3 in progress (P1 complete, P2 next)** |
+| Current phase | **Phase 3 — Day 3 in progress (P1 + P2 complete, P3 next)** |
 | Repo URL | https://github.com/pipiking123/pcb-defect-detection |
 | OneDrive folder | C:\Users\User\OneDrive - 厦门大学(马来西亚分校)\AIT304_PCB_Final |
-| Latest git commit | abcc6d3: Day 3 P1: log D-010 amendment, D-013–D-016; update state |
+| Latest git commit | d09f513: Day 3 P2: sanity checker merged |
 | Kaggle notebook URL | _add after creation_ |
 
 ---
@@ -49,12 +49,11 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 
 > **Update this section every night before sleep. Takes 2 minutes.**
 
-**Day 3 Phase 1 complete.** Commit: ee58602. `src/data/convert_dataset.py` merged. Implements D-010 (flat-index lookup), D-013 (Ultralytics 8.3.40), D-014 (single tested image), D-015 (official split + 80/20 val seed=42). Codex re-review: APPROVE WITH MINOR FIXES — minor fix intentionally not applied per D-016. Pipeline not yet executed against real data — execution gate is Phase 3.
+**Day 3 Phase 2 complete.** Commit: d09f513. `src/data/sanity_check.py` merged. Class-stratified sampling (seed=42), dual-view PNG rendering (image_boxes + label_only), hard coverage gate (exit 2 = sampling bug, exit 3 = converter bug). Codex re-review: APPROVE WITH MINOR FIXES — re-scan elimination intentionally not applied per D-017. Pipeline not yet executed against real data — execution gate is Phase 3.
 
-**Next:** Day 3 Phase 2 — sanity checker (`src/data/sanity_check.py`). Draws GT boxes on 5 random images per split, writes PNGs to `runs/sanity_day3/`. Visual verification gate before any training code or Colab work.
+**Next:** Day 3 Phase 3 — execute converter + sanity checker on real DeepPCB data + eyeball PNGs (visual verification gate before any training code or Colab work).
 
 **Pending Day 3 phases:**
-- P2: sanity checker
 - P3: execute converter + sanity check on real DeepPCB data + eyeball PNGs (gate)
 - P4: Colab notebook + 5-epoch smoke test
 - P5: close-out commit
@@ -84,6 +83,7 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 - [ ] `register_ca.py` created and committed
 - [ ] `yolo11n-CA.yaml` created and committed
 - [x] `convert_dataset.py` created, committed, and run on Kaggle (merged at ee58602)
+- [x] `sanity_check.py` created and committed (merged at d09f513)
 - [ ] `sanity_check.py` run — bounding boxes verified to wrap defects
 - [ ] CA registration test: `ca_count == 3` ✓ confirmed
 - [ ] WIoU patch test: "✓ WIoU patch applied" message confirmed
@@ -154,6 +154,7 @@ These are the non-negotiable constraints. If a new Claude instance contradicts t
 
 > When making a new architectural / methodological choice, add it here AND append the full reasoning to `DECISIONS.md`.
 
+- 2026-06-24 — Accept duplicate build_class_index() scan in sanity_check.py (clarity over non-measurable speedup) — see DECISIONS.md #017
 - 2026-06-24 — Compute platform formally amended: Kaggle → Google Colab (Kaggle GPU blocked, D-011 root cause) — see DECISIONS.md #007-amendment
 - 2026-06-24 — Accept defensive redundancy in validation invariants 1a/1b (belt-and-braces on pipeline critical path) — see DECISIONS.md #016
 - 2026-06-24 — Honor official trainval/test split; 80/20 val carve at seed=42 — see DECISIONS.md #015
