@@ -49,11 +49,15 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 
 > **Update this section every night before sleep. Takes 2 minutes.**
 
-- **Last completed:** GitHub repo created, initial commit pushed, project scaffolding live
-- **In progress:** nothing — Day 1 work complete
-- **Next action (tomorrow 1st thing):** Phase 2 literature review — Cowork to populate Zotero from the 9 verified references in Blueprint §2
-- **Active blockers:** Kaggle phone verification failing — must resolve before Day 4 training. Fallback option: switch to Google Colab if Kaggle remains blocked. Not urgent for Days 1–3.
-- **GPU hours used this week:** 0 / 30
+**Day 3 Phase 1 complete.** Commit: ee58602. `src/data/convert_dataset.py` merged. Implements D-010 (flat-index lookup), D-013 (Ultralytics 8.3.40), D-014 (single tested image), D-015 (official split + 80/20 val seed=42). Codex re-review: APPROVE WITH MINOR FIXES — minor fix intentionally not applied per D-016. Pipeline not yet executed against real data — execution gate is Phase 3.
+
+**Next:** Day 3 Phase 2 — sanity checker (`src/data/sanity_check.py`). Draws GT boxes on 5 random images per split, writes PNGs to `runs/sanity_day3/`. Visual verification gate before any training code or Colab work.
+
+**Pending Day 3 phases:**
+- P2: sanity checker
+- P3: execute converter + sanity check on real DeepPCB data + eyeball PNGs (gate)
+- P4: Colab notebook + 5-epoch smoke test
+- P5: close-out commit
 
 ---
 
@@ -150,6 +154,11 @@ These are the non-negotiable constraints. If a new Claude instance contradicts t
 
 > When making a new architectural / methodological choice, add it here AND append the full reasoning to `DECISIONS.md`.
 
+- 2026-06-24 — Accept defensive redundancy in validation invariants 1a/1b (belt-and-braces on pipeline critical path) — see DECISIONS.md #016
+- 2026-06-24 — Honor official trainval/test split; 80/20 val carve at seed=42 — see DECISIONS.md #015
+- 2026-06-24 — Single tested-image input (no template) — see DECISIONS.md #014
+- 2026-06-24 — Ultralytics version pin = 8.3.40 — see DECISIONS.md #013
+- 2026-06-24 — D-010 literal path fixes superseded by flat-index implementation — see DECISIONS.md #010-amendment
 - 2026-06-14 — DeepPCB structure verified; 3 path fixes captured for Day 3 convert_dataset.py — see DECISIONS.md #010
 
 ---

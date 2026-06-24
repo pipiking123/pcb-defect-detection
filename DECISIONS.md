@@ -170,6 +170,74 @@ are unaffected.
 
 ---
 
+## D-010 amendment | 2026-06-24 | Implementation via flat-index lookup
+**Decision:** The literal D-010 fixes (append `_test.jpg` to col1, read annotations from col2 directly, return `(img_path, ann_path)` pairs) were superseded by a more general flat-index implementation in `src/data/convert_dataset.py`.
+
+**How it works:** The file system under the resolved DeepPCB root is walked once at startup via `pcbdata_root.rglob("*")`. Two independent indexes are built:
+- `image_index`: maps bare sample id (e.g. `00041000`) → absolute path of `*_test.jpg`
+- `label_index`: maps bare sample id → absolute path of `*.txt` annotation
+
+`parse_split_file` reads column 1 of each split-file line, extracts the bare id via `_bare_id()` (stripping `_test`/`_temp` suffixes from the stem), then resolves both image and annotation via dict lookup. The nonexistent `.jpg` paths in col1 are never used as paths — only as a source for the bare id. Column 2 is not parsed in this implementation; the annotation is resolved by the same bare id.
+
+**Why this is better than the literal D-010 plan:**
+- Robust to dataset layout variations (auto-detection of PCBData root via `_resolve_pcbdata_root` supports both `<src>/PCBData/` and `<src>/PCBData/PCBData/`).
+- Dict lookup failure surfaces missing files explicitly rather than producing silently broken paths.
+- Functionally equivalent to the original D-010 for DeepPCB's actual on-disk layout: same image, same annotation, same pairing.
+
+**Affects:** `src/data/convert_dataset.py` (Day 3 P1).
+
+**Reversible?** No — this is the implemented behavior. The D-010 logical guarantee (correct image + annotation pairing on disk) is preserved.
+
+---
+
+## D-013 | 2026-06-24 | Ultralytics version pin = 8.3.40
+**Decision:** Pin Ultralytics to `ultralytics==8.3.40` for the entire project. No floating versions.
+
+**Why:** The 8.3.x series is the first to officially support YOLOv11. A floating version risks subtle behavior drift between baseline runs and CA+WIoU runs (e.g., a tweaked NMS implementation in a patch release would invalidate ablation comparisons by changing the underlying code under both arms of the experiment). Pinning guarantees the baseline and the contribution arm execute on byte-identical Ultralytics code.
+
+**Alternatives considered:** Floating `pip install ultralytics` (rejected: reproducibility risk); pinning to latest 8.3.x at experiment start (rejected: still floating across experiments).
+
+**Affects:** Colab notebook install cell (Day 3 P4), eventual `requirements.txt`.
+
+**Reversible?** Yes if needed mid-project, but any version change requires re-running all completed experiments under the new version. Treat as effectively locked.
+
+---
+
+## D-014 | 2026-06-24 | Single tested-image input (no template)
+**Decision:** Use only `*_test.jpg` as YOLO input. Template images (`*_temp.jpg`) are ignored entirely.
+
+**Why:**
+1. Direct comparability with the two closest published baselines: PCB-YOLO and YOLOv11-PCB both treat DeepPCB as standard single-image object detection on the tested image. Using paired input would change the task to reference-based change detection, making mAP numbers non-comparable.
+2. Operational realism: a production AOI line does not always have a pixel-aligned template image at inference time. A detector that works on the tested image alone is more deployable, which aligns with the ViTrox portfolio target.
+
+**Implementation:** `build_file_index` only registers files whose stem ends in `_test`. Files ending in `_temp` are silently skipped (no `_temp` references appear anywhere else in the script).
+
+**Reversible?** No without invalidating baseline comparisons.
+
+---
+
+## D-015 | 2026-06-24 | Honor official trainval/test split; 80/20 val carve at seed=42
+**Decision:** Preserve DeepPCB's official `trainval.txt` / `test.txt` split exactly. Within trainval, carve an 80/20 train/validation subset using `random.Random(42).shuffle(...)`. Test set is never touched during model development.
+
+**Why:** The DeepPCB authors fixed which 500 images form the test set. Every published mAP on this benchmark is measured against that exact test set. Reshuffling would invalidate all literature comparisons regardless of model quality. The 80/20 val carve out of trainval enables early stopping and hyperparameter monitoring without touching the held-out test set, protecting against indirect test-set contamination via hyperparameter tuning.
+
+**Implementation:** `val_size = len(shuffled) // 5` gives 200 val / 800 train for the standard 1000-entry trainval. Seed=42 is supplied to a local `random.Random(42)` instance, not the global random module, so reproducibility is guaranteed regardless of any other RNG usage.
+
+**Reversible?** No — reshuffling test set would invalidate all literature comparisons.
+
+---
+
+## D-016 | 2026-06-24 | Accept defensive redundancy in validation invariants 1a and 1b
+**Decision:** Validation invariants 1a (parser-drop check: `len(parsed_pairs) == raw_line_count`) and 1b (split-sum check: `train + val == trainval_raw_count`) are mathematically redundant for the trainval/test sums but are intentionally kept separate.
+
+**Why:** Distinct failure modes produce distinct error messages, making 2 a.m. debugging unambiguous. A combined `train + val + test == trainval_raw + test_raw` check would compress two diagnostic signals into one. Belt-and-braces validation on data-pipeline code is a feature on the critical path to all downstream experiments.
+
+**Source:** Codex re-review of Day 3 P1, verdict APPROVE WITH MINOR FIXES; the "minor fix" was the redundancy cleanup, which is intentionally not applied per this decision.
+
+**Reversible?** Yes, trivially — collapse to a single check if ever desired.
+
+---
+
 ## D-NNN | YYYY-MM-DD | <next decision template>
 **Decision:**
 **Why:**
