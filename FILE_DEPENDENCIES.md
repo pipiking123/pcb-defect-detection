@@ -117,10 +117,12 @@ These are the footguns. Each one can cause a silent, hours-long wrong experiment
 - `ultralytics.utils.metrics.bbox_iou`
 - `ultralytics.utils.loss.bbox_iou`
 
-Both replacements are live in the Python process from the moment `apply_wiou_patch()` is called until the Kaggle kernel is restarted. There is no clean revert (Python caches module object references; setting the name back does not undo references already held by loss class instances).
+Both replacements are live in the Python process from the moment `apply_wiou_patch()` is called until the Google Colab notebook is restarted. There is no clean revert (Python caches module object references; setting the name back does not undo references already held by loss class instances).
 
 **This is why the kernel restart between CIoU and WIoU experiments is non-negotiable.**
-Run order: EXP-1 → EXP-3 → **restart kernel** → EXP-2 → EXP-4.
+Run order: EXP-1 → EXP-3 → **restart Google Colab runtime** → EXP-2 → EXP-4.
+
+> **Compute platform note:** Google Colab is the active compute platform for this project, per D-011 (which supersedes the original Kaggle plan in D-007 — see D-007 amendment).
 
 ### 3.2 — `register_ca.py` injects into two ultralytics namespaces at runtime
 

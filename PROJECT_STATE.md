@@ -25,12 +25,12 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 | Lecturer | Ashwaq Qasem |
 | Target company | ViTrox Corporation (Malaysia) |
 | Deadline | **3 July 2026, 6:00 PM Malaysia time** |
-| Today's date | Tuesday, 2026-06-16 |
-| Days remaining | 17 |
-| Current phase | **Phase 1 — Setup (project Day 1)** |
+| Today's date | Tuesday, 2026-06-24 |
+| Days remaining | 9 |
+| Current phase | **Phase 3 — Day 3 in progress (P1 complete, P2 next)** |
 | Repo URL | https://github.com/pipiking123/pcb-defect-detection |
 | OneDrive folder | C:\Users\User\OneDrive - 厦门大学(马来西亚分校)\AIT304_PCB_Final |
-| Latest git commit | 2c9c565144126fec6cc6c67a4c5b44130b2df3fe: Day 1 init |
+| Latest git commit | abcc6d3: Day 3 P1: log D-010 amendment, D-013–D-016; update state |
 | Kaggle notebook URL | _add after creation_ |
 
 ---
@@ -83,7 +83,7 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 - [ ] `coord_attention.py` created and committed
 - [ ] `register_ca.py` created and committed
 - [ ] `yolo11n-CA.yaml` created and committed
-- [ ] `convert_dataset.py` created, committed, and run on Kaggle
+- [x] `convert_dataset.py` created, committed, and run on Kaggle (merged at ee58602)
 - [ ] `sanity_check.py` run — bounding boxes verified to wrap defects
 - [ ] CA registration test: `ca_count == 3` ✓ confirmed
 - [ ] WIoU patch test: "✓ WIoU patch applied" message confirmed
@@ -154,6 +154,7 @@ These are the non-negotiable constraints. If a new Claude instance contradicts t
 
 > When making a new architectural / methodological choice, add it here AND append the full reasoning to `DECISIONS.md`.
 
+- 2026-06-24 — Compute platform formally amended: Kaggle → Google Colab (Kaggle GPU blocked, D-011 root cause) — see DECISIONS.md #007-amendment
 - 2026-06-24 — Accept defensive redundancy in validation invariants 1a/1b (belt-and-braces on pipeline critical path) — see DECISIONS.md #016
 - 2026-06-24 — Honor official trainval/test split; 80/20 val carve at seed=42 — see DECISIONS.md #015
 - 2026-06-24 — Single tested-image input (no template) — see DECISIONS.md #014

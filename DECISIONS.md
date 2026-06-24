@@ -170,6 +170,19 @@ are unaffected.
 
 ---
 
+## D-007 amendment | 2026-06-24 | Compute platform: Kaggle → Google Colab
+**Decision:** The original D-007 selection of Kaggle as the GPU training platform is superseded. Google Colab is the active compute platform for all training, smoke tests, and ablation experiments.
+
+**Why:** Kaggle account creation succeeded under username `tyztehyanze`, but phone verification failed and blocks GPU access entirely (logged as D-011). Colab provides equivalent T4/L4 GPU access without phone verification, identical Ultralytics 8.3.40 install path, and Drive-mount persistence that survives session disconnects. The training code itself is platform-agnostic.
+
+**Source:** D-011 (Kaggle phone verification blocker, Day 1).
+
+**Affects:** All Phase 3+ training and evaluation work. `FILE_DEPENDENCIES.md` §3.1 updated to reflect Colab as the platform.
+
+**Reversible?** Yes — if Kaggle phone verification ever clears, the training code runs on either platform unchanged. No need to revert unless Colab quota becomes a hard blocker.
+
+---
+
 ## D-010 amendment | 2026-06-24 | Implementation via flat-index lookup
 **Decision:** The literal D-010 fixes (append `_test.jpg` to col1, read annotations from col2 directly, return `(img_path, ann_path)` pairs) were superseded by a more general flat-index implementation in `src/data/convert_dataset.py`.
 
