@@ -150,6 +150,26 @@ are unaffected.
 
 ---
 
+## D-011 — Kaggle → Google Colab pivot for GPU training
+**Date:** 2026-06-17
+**Status:** Active
+**Context:** Kaggle account created during Day 1 setup, but phone verification failed on two attempts (own number + family member's number). Without verification, Kaggle Notebooks GPU access is locked.
+**Decision:** Pivot training infrastructure from Kaggle Notebooks to Google Colab (free tier, T4 GPU).
+**Rationale:** Day 3 begins the training pipeline scaffold; we cannot wait further on Kaggle. Colab has no phone verification, supports the same Ultralytics + PyTorch stack, and can run from the same GitHub repo via `!git clone`. Trade-off: Colab free tier sessions are time-limited (~12 hrs) and less predictable than Kaggle's 30 hrs/week quota — we may need to checkpoint training more aggressively.
+**Implications for Day 3+:** Training scripts must be Colab-compatible (drive mount, session reconnection handling). Dataset conversion scripts unchanged. Will revisit if Colab quota proves insufficient for all 4 experiments.
+
+---
+
+## D-012 — NotebookLM adopted for comprehension + cross-paper synthesis
+**Date:** 2026-06-17
+**Status:** Active
+**Context:** Day 2 literature review requires reading 9 papers and synthesizing gaps for the contribution claim. Manual reading of 9 PDFs estimated at 4+ hours.
+**Decision:** Adopt NotebookLM as the primary comprehension and cross-paper synthesis tool. Zotero retained as the citation archive + BibTeX export source (NOT replaced).
+**Rationale:** NotebookLM is grounded in uploaded source PDFs with inline citations, reducing hallucination risk for factual extraction. Validated today by independently surfacing YOLOv11+CA and YOLOv11+WIoU as unoccupied gaps in the design matrix — matched the blueprint v2.0 contribution claim from independent ground truth. Manual verification still required for high-stakes claims (e.g. PCB-YOLO FFCA-vs-CA distinction was manually verified against pages 3, 10–11 of the source).
+**Implications:** Zotero remains the source of truth for citations into Overleaf. NotebookLM outputs are working notes, not deliverables. High-stakes claims (anything that goes into §2 or §3 of the CVPR report) require manual source verification before use.
+
+---
+
 ## D-NNN | YYYY-MM-DD | <next decision template>
 **Decision:**
 **Why:**

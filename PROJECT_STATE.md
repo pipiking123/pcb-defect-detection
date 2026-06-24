@@ -35,6 +35,16 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 
 ---
 
+## Contribution Claim (LOCKED — Day 2, 2026-06-17)
+
+> "This work investigates the integration of vanilla Coordinate Attention (Hou et al., CVPR 2021) with the YOLOv11 backbone for PCB defect detection on the DeepPCB benchmark, evaluated across a 2×2 ablation of optimizer (Adam, SGD) and loss function (CIoU, WIoU). We differentiate from PCB-YOLO (Liu et al., PLOS ONE) which uses the FFCA multi-branch variant with YOLOv8, and from YOLOv11-PCB (Scientific Reports) which uses EMA+CARAFE attention with EIoU loss on the same backbone."
+
+**Status:** LOCKED. Do not modify without explicit approval.
+**Source of differentiation:** Verified via NotebookLM cross-paper synthesis + manual confirmation of FFCA-vs-vanilla-CA distinction in PCB-YOLO paper (pages 3, 10–11).
+**Use:** This is the sentence to defend in viva and to anchor §1 (Introduction) and §2 (Related Work) of the CVPR report.
+
+---
+
 ## 🎯 TODAY'S STATUS
 
 > **Update this section every night before sleep. Takes 2 minutes.**
@@ -141,6 +151,18 @@ These are the non-negotiable constraints. If a new Claude instance contradicts t
 > When making a new architectural / methodological choice, add it here AND append the full reasoning to `DECISIONS.md`.
 
 - 2026-06-14 — DeepPCB structure verified; 3 path fixes captured for Day 3 convert_dataset.py — see DECISIONS.md #010
+
+---
+
+## 📅 DAILY LOG
+
+### Day 2 — 2026-06-17
+
+- Kaggle phone verification failed → pivoting to Google Colab (see D-011)
+- Zotero: 9/9 papers uploaded to AIT304_PCB_Project collection, all tagged with methodology/dataset/mAP-result
+- NotebookLM adopted as comprehension + cross-paper synthesis tool (see D-012)
+- PCB-YOLO paper 7 manually verified: FFCA confirmed as multi-branch CA variant (not vanilla CA) — differentiation sharpened
+- Contribution claim locked (see Contribution Claim section above)
 
 ---
 
