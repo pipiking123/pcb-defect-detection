@@ -47,6 +47,7 @@ results/      Metrics CSVs, charts, confusion matrices (no .pt weights — those
 
 ## Notebook hygiene
 
-Notebooks are stripped of outputs automatically via nbstripout pre-commit filter.
-If committing from outside VS Code (e.g. directly from Colab UI), manually run
+Notebooks are stripped of outputs automatically via nbstripout git clean filter
+(configured in `.git/config`). If committing from outside VS Code (e.g. directly
+from Colab UI), the filter does not apply — manually run
 **Cell → All Output → Clear** before commit.
