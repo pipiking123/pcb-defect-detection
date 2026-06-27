@@ -265,6 +265,41 @@ are unaffected.
 
 ---
 
+## D-018 | 2026-06-27 | Augmentation policy for project lifetime
+**Decision:** All spatial and color augmentations OFF except fliplr=0.5. Concretely:
+hsv_h=0, hsv_s=0, hsv_v=0, flipud=0, fliplr=0.5, mosaic=0, degrees=0,
+translate=0, scale=0, shear=0, perspective=0.
+**Why:** PCB defects are orientation- and color-specific. DeepPCB images are predominantly
+green; hue/saturation shifts have no physical meaning. Defects like spurs and mousebites
+have directional features; flipud changes their meaning. COCO defaults are wrong for this
+domain. Locked identically across Day 4 smoke + Day 5+ four-experiment ablation so the
+only variables in ablation are optimizer and loss function.
+**Alternatives considered:** COCO defaults rejected (wrong domain). flipud=0.5 rejected
+(changes directional defect meaning for spurs/mousebites).
+**Affects:** Day 4 smoke onward, all training runs.
+**Reversible?** Medium — reversing requires re-running all completed experiments under
+new augmentation settings.
+
+---
+
+## D-019 | 2026-06-27 | Colab-local dataset YAML + preflight data gate
+**Decision:** The notebook generates /content/datasets/deeppcb/deeppcb_colab.yaml after
+rsync from Drive to local SSD, then runs a preflight data gate before any Ultralytics
+call. Gate asserts: 800 train / 200 val / 500 test image counts; every .jpg has a
+matching .txt stem; all class IDs in label files are in {0..5}; no label file is empty.
+**Why:** The repo deeppcb.yaml contains a Windows absolute path (C:\Users\...) and is
+not portable to Colab. Generating a Colab-local YAML at runtime keeps the canonical YAML
+untouched while making the notebook self-sufficient. The preflight gate catches data
+corruption or rsync incompleteness before burning Colab GPU quota on a training run that
+will fail with a cryptic Ultralytics error.
+**Alternatives considered:** Editing deeppcb.yaml in-place rejected (pollutes canonical
+YAML with Colab-specific paths, breaks local tooling). Skipping the gate rejected (silent
+failures on partial rsync waste GPU quota with no clear error).
+**Affects:** Day 4 onward, all Colab-based training.
+**Reversible?** High — drop the YAML and gate cells; no impact on prior commits.
+
+---
+
 ## D-NNN | YYYY-MM-DD | <next decision template>
 **Decision:**
 **Why:**
