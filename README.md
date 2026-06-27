@@ -42,3 +42,11 @@ results/      Metrics CSVs, charts, confusion matrices (no .pt weights — those
 ```
 
 > Trained weights (.pt files) are stored on OneDrive, not in this repo.
+
+---
+
+## Notebook hygiene
+
+Notebooks are stripped of outputs automatically via nbstripout pre-commit filter.
+If committing from outside VS Code (e.g. directly from Colab UI), manually run
+**Cell → All Output → Clear** before commit.
