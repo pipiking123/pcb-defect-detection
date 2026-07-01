@@ -25,3 +25,8 @@ runs/
 
 # Logs
 *.log
+
+# Day 5: weights & artifacts (Colab paths + defensive *.pth catch)
+*.pth
+weights/
+/content/
