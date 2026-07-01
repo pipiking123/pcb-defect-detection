@@ -528,16 +528,57 @@ def main() -> None:
         len(test_pairs), test_raw_count,
     )
 
-    # ── D-015: carve 80/20 val from trainval with local seeded RNG ─────────
+    # Plate-aware 80/20 split. Random per-image split (pre-Day 5)
+    # leaked 99.5% of val plates into train — see audit at Day 5
+    # item 2a. Grouping by 7-char plate ID enforces disjoint
+    # source plates between train and val.
+    # ── D-015 (revised): plate-aware 80/20 val from trainval, seed=42 ───────
+    plate_to_pairs: Dict[str, List[Tuple[str, Path, Path]]] = defaultdict(list)
+    for pair in trainval_pairs:
+        plate_to_pairs[pair[0][:7]].append(pair)
+
+    plate_ids = sorted(plate_to_pairs)          # deterministic input order
     rng = random.Random(42)
-    shuffled = list(trainval_pairs)
-    rng.shuffle(shuffled)
-    val_size = len(shuffled) // 5  # 20 %
-    val_pairs = shuffled[:val_size]
-    train_pairs = shuffled[val_size:]
+    rng.shuffle(plate_ids)
+
+    if len(plate_ids) < 5:
+        raise ValueError(
+            f"Plate-aware split requires at least 5 plates, "
+            f"got {len(plate_ids)}. Cannot form 80/20 split."
+        )
+
+    val_plate_count = len(plate_ids) // 5       # 20 % of plates
+
+    # Image counts differ slightly from old 800/200; plates have variable
+    # image counts (typically 8-10). That is expected and correct.
+    train_pairs: List[Tuple[str, Path, Path]] = [
+        pair for pid in plate_ids[val_plate_count:]
+             for pair in plate_to_pairs[pid]
+    ]
+    val_pairs: List[Tuple[str, Path, Path]] = [
+        pair for pid in plate_ids[:val_plate_count]
+             for pair in plate_to_pairs[pid]
+    ]
+
+    # Permanent safety check — fails loudly if the split ever regresses.
+    _train_plate_set = {p[0][:7] for p in train_pairs}
+    _val_plate_set   = {p[0][:7] for p in val_pairs}
+    _leaked = _train_plate_set & _val_plate_set
+    if _leaked:
+        raise AssertionError(
+            f"Plate-disjoint invariant violated: {len(_leaked)} shared plate IDs "
+            f"(first 5: {sorted(_leaked)[:5]})"
+        )
+
+    n_train_plates = len(plate_ids) - val_plate_count
+    n_val_plates   = val_plate_count
+    print(
+        f"Split by plate (seed=42): {n_train_plates} plates -> {len(train_pairs)} imgs,\n"
+        f"                          {n_val_plates} plates -> {len(val_pairs)} imgs"
+    )
     log.info(
-        "D-015 split: train=%d, val=%d (80/20, Random(42))",
-        len(train_pairs), len(val_pairs),
+        "D-015 split (plate-aware): %d plates / %d imgs train, %d plates / %d imgs val",
+        n_train_plates, len(train_pairs), n_val_plates, len(val_pairs),
     )
 
     # ── Process splits ─────────────────────────────────────────────────────
