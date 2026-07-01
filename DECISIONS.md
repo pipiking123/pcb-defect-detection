@@ -300,12 +300,23 @@ failures on partial rsync waste GPU quota with no clear error).
 
 ---
 
-## D-NNN | YYYY-MM-DD | <next decision template>
-**Decision:**
-**Why:**
-**Alternatives considered:**
-**Affects:**
-**Reversible?**
+### D-020 — Cross-platform zip handling
+**Date:** 28 June 2026
+**Context:** Windows PowerShell `Compress-Archive` emits zip entries with literal backslashes (`train\images\foo.jpg`). Python's `zipfile.extractall` on Linux/Colab treats the whole string as a filename, producing a flat output (~1700 files) instead of a directory tree.
+**Decision:** `notebooks/day4_pipeline.ipynb` cell 3 normalizes `\` → `/` on each `ZipInfo.filename` before extraction. Going forward, prefer producing archives with `python -m zipfile -c deeppcb.zip deeppcb/` or 7-Zip to keep entries POSIX-clean at the source.
+**Status:** active.
+
+### D-021 — Repo visibility policy
+**Date:** 28 June 2026
+**Context:** Private GitHub repos cannot be cloned anonymously from Colab; Day 4b required temporarily making `pipiking123/pcb-defect-detection` public to unblock `git clone` in cell 1.
+**Decision:** Repo MAY be public during active Colab development sessions for clone convenience. Repo MUST be re-privated at the close of each multi-day milestone if portfolio-sensitive content (novel architecture code, unpublished thesis material, contribution-claim differentiators) has landed since the last public window. Day 4 close-out re-privates immediately after this commit pushes.
+**Status:** active.
+
+### D-022 — Browser-incognito requirement for Colab
+**Date:** 28 June 2026
+**Context:** Google OAuth bug #5944 ("Google Drive for desktop" wrong OAuth client) breaks `drive.mount()` on King's default Chrome profile. Bug is profile-state-specific (suspected extension or stale auth cookie) and still active Google-side as of 28 June 2026.
+**Decision:** Until the triggering profile state is identified and removed, all Colab work on King's account is done in a Chrome incognito tab. Open follow-up: bisect extensions / clear site data to identify trigger and restore default-profile usage.
+**Status:** active, with open follow-up.
 
 ---
 

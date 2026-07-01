@@ -25,12 +25,12 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 | Lecturer | Ashwaq Qasem |
 | Target company | ViTrox Corporation (Malaysia) |
 | Deadline | **3 July 2026, 6:00 PM Malaysia time** |
-| Today's date | Tuesday, 2026-06-24 |
-| Days remaining | 9 |
-| Current phase | **Day 3 complete — visual gate cleared; Phase 4 (Colab smoke test) is tomorrow's work** |
+| Today's date | Sunday, 2026-06-28 |
+| Days remaining | 5 |
+| Current phase | **Day 4 complete (28 June 2026) — vanilla YOLO11n baseline, mAP50=0.928; Day 5 next** |
 | Repo URL | https://github.com/pipiking123/pcb-defect-detection |
 | OneDrive folder | C:\Users\User\OneDrive - 厦门大学(马来西亚分校)\AIT304_PCB_Final |
-| Latest git commit | deaea71 |
+| Latest git commit | (Day 4b close-out, pending) |
 | Kaggle notebook URL | _add after creation_ |
 
 ---
@@ -49,14 +49,14 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 
 > **Update this section every night before sleep. Takes 2 minutes.**
 
-**Day 3 substantively complete.** Data pipeline verified end-to-end on real DeepPCB.
+**Day 4 complete (28 June 2026).** Vanilla YOLOv11n baseline established on Colab T4. All four smoke-test gates passed (mAP50=0.928, box_loss 2.241→0.877, 86 s).
 - P1 converter merged at ee58602
 - P2 sanity checker merged at d09f513
 - Real-data execution clean: 800 train / 200 val / 500 test, all invariants green
 - Visual gate cleared 2026-06-24: 30 PNGs reviewed (15 image_boxes + 15 label_only), all 15 image stems PASS
 - Coverage: all 6 classes appear in all 3 splits, well-distributed
 
-**Tomorrow (Day 4):** Phase 4 — Colab notebook scaffold + 5-epoch smoke test of vanilla YOLO11n on the converted DeepPCB. Starts in a fresh Claude.ai chat with the Day 4 resume prompt.
+**Next (Day 5):** Stratified-split audit, then CA + WIoU integration.
 
 **Day 3 commit chain (linear history on origin/main):**
 - ee58602 — converter
@@ -183,6 +183,35 @@ These are the non-negotiable constraints. If a new Claude instance contradicts t
 - NotebookLM adopted as comprehension + cross-paper synthesis tool (see D-012)
 - PCB-YOLO paper 7 manually verified: FFCA confirmed as multi-branch CA variant (not vanilla CA) — differentiation sharpened
 - Contribution claim locked (see Contribution Claim section above)
+
+---
+
+## Day 4 — COMPLETE (28 June 2026)
+
+**Status:** Vanilla YOLOv11n baseline established on Google Colab T4. All four Day 4b validation gates passed.
+
+**Smoke test (5 epochs, T4):**
+- Gate 1 (epoch count): 5/5 ✓
+- Gate 2 (losses finite): ✓
+- Gate 3 (final val mAP50): 0.9283 ✓
+- Gate 4 (train/box_loss): 2.241 → 0.877 ✓
+- Training time: 86 s
+- mAP50-95: 0.710
+
+**Environment:**
+- ultralytics 8.3.40 (D-013), seed=42, fliplr=0.5 only (D-018)
+- Colab T4, ~2 GPU minutes for 5-epoch smoke
+- Browser: Chrome incognito (D-022 — OAuth bug #5944 workaround)
+- Repo visibility: public during Colab session, re-privated at close-out (D-021)
+
+**Artifacts:**
+- Repo (git): `artifacts/day4_vanilla/{results.csv, args.yaml, results.png}`
+- Drive only (not in git): `<REPO_DRIVE>/runs/smoke/day4_vanilla/{best.pt, last.pt}`
+
+**Day 5 prerequisites (do before full 100-epoch run):**
+- Verify `convert_dataset.py` train/val split is stratified by source plate, not random. If random, mAP50=0.928 at 5 epochs may be plate leakage. Re-split + re-run smoke before committing GPU budget to 100 epochs.
+- Open follow-up: identify Chrome profile state (extension/cookie) triggering OAuth bug #5944.
+- Deferred Drive housekeeping: ~1700 flat-named cruft files at `<REPO_DRIVE>/datasets/` — inert for pipeline (new cell 3 ignores them) but should be cleaned before Day 5 for hygiene.
 
 ---
 
