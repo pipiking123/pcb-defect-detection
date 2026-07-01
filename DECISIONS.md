@@ -238,6 +238,8 @@ are unaffected.
 
 **Reversible?** No — reshuffling test set would invalidate all literature comparisons.
 
+**Status:** superseded by D-024 (Day 5, 1 July 2026).
+
 ---
 
 ## D-016 | 2026-06-24 | Accept defensive redundancy in validation invariants 1a and 1b
@@ -317,6 +319,24 @@ failures on partial rsync waste GPU quota with no clear error).
 **Context:** Google OAuth bug #5944 ("Google Drive for desktop" wrong OAuth client) breaks `drive.mount()` on King's default Chrome profile. Bug is profile-state-specific (suspected extension or stale auth cookie) and still active Google-side as of 28 June 2026.
 **Decision:** Until the triggering profile state is identified and removed, all Colab work on King's account is done in a Chrome incognito tab. Open follow-up: bisect extensions / clear site data to identify trigger and restore default-profile usage.
 **Status:** active, with open follow-up.
+
+### D-023 — Codex review workflow
+**Date:** 1 July 2026
+**Context:** During Day 5 item 1 close-out, a Codex-labeled review was produced by Claude Code itself rather than by independent Codex execution in VS Code. This collapsed the intended independence between the code-writing layer (Claude Code) and the review layer (Codex), defeating the four-layer review discipline established for the project.
+**Decision:** Claude Code must never produce, simulate, or delegate Codex reviews under any label or via any sub-agent. "Codex review" means Claude Code stops, presents the diff, and waits for King to run Codex independently in VS Code and paste back the verdict. Rationale: preserves the independence of the second-reviewer layer, especially critical for the upcoming CA module, WIoU patch, and any file with subtle correctness properties.
+**Status:** active.
+
+### D-024 — Plate-aware train/val split and upstream test-set leakage
+**Date:** 1 July 2026
+**Context:** Day 5 audit of src/data/convert_dataset.py revealed the per-image random split (D-015 original) leaked 93 of 94 val plates into train — 199 of 200 val images (99.5%) came from plates the model also saw during training. Root cause: shuffling individual (bare_id, img_path, ann_path) tuples rather than grouping by source PCB plate. DeepPCB filenames encode plate ID in the first 7 characters of the 8-character stem (last char is scan index 0-9). The baseline mAP50=0.928 from Day 4b is therefore invalidated as a generalization metric.
+
+A second finding: DeepPCB's official upstream split has 4 plates cross-cutting trainval.txt and test.txt (plates 1300019, 2008529, 4400006, 9200011 — 22 of 500 test images = 4.4% test-set plate leakage). This is inherited from upstream and is present in all published DeepPCB benchmark numbers (PCB-YOLO, YOLOv11-PCB, etc.).
+
+**Decision:**
+1. Train/val split rewritten to group by 7-char plate ID, shuffle plate IDs with seed=42, and assign all images of a plate to the same split. Enforced by a permanent inline plate-disjoint assertion and a <5-plate ValueError guard. Committed at a02964b after Codex APPROVE.
+2. Upstream test-set leakage is documented but NOT excised. Primary results reported against the standard 500-image test set for direct comparability with PCB-YOLO and YOLOv11-PCB. Supplementary results reported against a cleaned 478-image test subset (4 leaked plates removed at eval time) to measure honest generalization. Both numbers appear in the final report and viva slides.
+
+**Status:** active. Dataset regeneration + 5-epoch smoke re-run pending (Day 5 items 2c-2e) to establish honest baseline.
 
 ---
 

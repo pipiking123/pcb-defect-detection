@@ -25,12 +25,12 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 | Lecturer | Ashwaq Qasem |
 | Target company | ViTrox Corporation (Malaysia) |
 | Deadline | **3 July 2026, 6:00 PM Malaysia time** |
-| Today's date | Sunday, 2026-06-28 |
-| Days remaining | 5 |
-| Current phase | **Day 4 complete (28 June 2026) — vanilla YOLO11n baseline, mAP50=0.928; Day 5 next** |
+| Today's date | Wednesday, 2026-07-01 |
+| Days remaining | 2 |
+| Current phase | **Day 5 in progress — split audit complete (99.5% val leakage caught + fixed, a02964b), plate-aware baseline regeneration pending** |
 | Repo URL | https://github.com/pipiking123/pcb-defect-detection |
 | OneDrive folder | C:\Users\User\OneDrive - 厦门大学(马来西亚分校)\AIT304_PCB_Final |
-| Latest git commit | (Day 4b close-out, pending) |
+| Latest git commit | a02964b |
 | Kaggle notebook URL | _add after creation_ |
 
 ---
@@ -141,7 +141,11 @@ Then respond with: *"Resumed. Current phase: [phase from below]. Day [N] of 19. 
 These are the non-negotiable constraints. If a new Claude instance contradicts them, the new Claude is wrong.
 
 - **Dataset:** DeepPCB, 1,500 image pairs, 6 classes (open, short, mousebite, spur, copper, pin-hole), 640×640 grayscale binarised
-- **Split:** 800 train / 200 val / 500 test (test = official DeepPCB test split, untouched)
+- **Split:** Plate-aware 80/20 train/val by 7-char plate ID, seed=42
+  (image counts pending Day 5 regeneration — old 800/200 invalidated
+  by D-024). Test = official DeepPCB test.txt (500 imgs, 4.4% upstream
+  plate leakage documented per D-024). Supplementary clean test subset
+  = 478 imgs (4 leaked plates removed at eval time).
 - **Class ID conversion:** DeepPCB uses 1..6, YOLO needs 0..5 → `cls = cls - 1` in `convert_dataset.py`
 - **Experiments:** 2×2 ablation — {YOLOv8n, YOLO11n+CA} × {Adam-CIoU, SGD-WIoU}
 - **Model name:** `yolo11n.pt` NOT `yolov11n.pt` (Ultralytics dropped the "v")
@@ -162,15 +166,11 @@ These are the non-negotiable constraints. If a new Claude instance contradicts t
 
 > When making a new architectural / methodological choice, add it here AND append the full reasoning to `DECISIONS.md`.
 
-- 2026-06-24 — Day 3 visual gate cleared, all 15 stems PASS — data pipeline formally verified
-- 2026-06-24 — Accept duplicate build_class_index() scan in sanity_check.py (clarity over non-measurable speedup) — see DECISIONS.md #017
-- 2026-06-24 — Compute platform formally amended: Kaggle → Google Colab (Kaggle GPU blocked, D-011 root cause) — see DECISIONS.md #007-amendment
-- 2026-06-24 — Accept defensive redundancy in validation invariants 1a/1b (belt-and-braces on pipeline critical path) — see DECISIONS.md #016
-- 2026-06-24 — Honor official trainval/test split; 80/20 val carve at seed=42 — see DECISIONS.md #015
-- 2026-06-24 — Single tested-image input (no template) — see DECISIONS.md #014
-- 2026-06-24 — Ultralytics version pin = 8.3.40 — see DECISIONS.md #013
-- 2026-06-24 — D-010 literal path fixes superseded by flat-index implementation — see DECISIONS.md #010-amendment
-- 2026-06-14 — DeepPCB structure verified; 3 path fixes captured for Day 3 convert_dataset.py — see DECISIONS.md #010
+- 2026-07-01 — Plate-aware train/val split + upstream test leakage documented — see DECISIONS.md #024
+- 2026-07-01 — Codex review workflow (independence non-negotiable) — see DECISIONS.md #023
+- 2026-06-28 — Chrome incognito required for Colab (OAuth bug #5944) — see DECISIONS.md #022
+- 2026-06-28 — Repo visibility policy (public during Colab, re-privated at milestones) — see DECISIONS.md #021
+- 2026-06-28 — Cross-platform zip handling (backslash normalization) — see DECISIONS.md #020
 
 ---
 
@@ -212,6 +212,52 @@ These are the non-negotiable constraints. If a new Claude instance contradicts t
 - Verify `convert_dataset.py` train/val split is stratified by source plate, not random. If random, mAP50=0.928 at 5 epochs may be plate leakage. Re-split + re-run smoke before committing GPU budget to 100 epochs.
 - Open follow-up: identify Chrome profile state (extension/cookie) triggering OAuth bug #5944.
 - Deferred Drive housekeeping: ~1700 flat-named cruft files at `<REPO_DRIVE>/datasets/` — inert for pipeline (new cell 3 ignores them) but should be cleaned before Day 5 for hygiene.
+
+---
+
+## Day 5 (1 July 2026) — Split audit, fix, plate-aware baseline pending
+
+**Status:** in progress. HEAD: a02964b.
+
+### Completed
+- **Item 1 — .gitignore extension.** Added *.pth, weights/, /content/
+  with corrected section header noting *.pt is already covered at
+  line 2. Codex approved. Committed at 8980a85.
+- **Item 2a — Stratified-split audit.** Confirmed 99.5% val plate
+  leakage from per-image random split in convert_dataset.py. Also
+  surfaced 4.4% upstream test-set plate leakage in DeepPCB's
+  official split (4 plates cross-cutting trainval/test). See D-024.
+- **Item 2b (code) — Plate-aware split rewrite.** convert_dataset.py
+  split logic grouped by 7-char plate ID. Deterministic plate ordering
+  (sorted then shuffled with seed=42). Permanent inline plate-disjoint
+  assertion + <5-plate ValueError guard. Codex approved after one
+  change-request cycle (set-iteration determinism fix). Committed
+  at a02964b.
+- **Item 2b (docs) — this commit.** D-015 marked superseded, D-023
+  finalized (Codex workflow policy), D-024 new (split fix +
+  Option C test-set handling).
+
+### Pending
+- **Item 2c — Regenerate dataset locally** from corrected converter.
+  Verify plate-disjoint invariant on the new train/val split.
+- **Item 2d — Re-zip + re-upload deeppcb.zip to Drive.**
+- **Item 2e — Re-run 5-epoch smoke** on plate-disjoint split. Expected
+  outcome: mAP50 drops materially from the invalidated 0.928 baseline.
+  This becomes the honest baseline for the CA+WIoU comparison.
+- **Item 3 — Coordinate Attention module insertion** (vanilla Hou et
+  al. CVPR 2021).
+- **Item 4 — WIoU v3 loss patch** (Tong et al. 2023, non-monotonic
+  focusing).
+- **Item 5 — 2×2 ablation** on Colab T4: (Adam, SGD) × (CIoU, WIoU) on
+  YOLOv11n+CA, plus vanilla YOLOv11n headroom run at 100 epochs.
+
+### Viva-defense narrative (strengthened by Day 5 audit)
+Independent Day-5 audit of the data pipeline caught 99.5% val plate
+leakage in the initial split and documented 4.4% upstream test-set
+leakage in DeepPCB's official split. Corrected split is enforced by
+a permanent invariant. Results reported against both the standard
+500-image test set (comparability with PCB-YOLO and YOLOv11-PCB) and
+a 478-image cleaned subset (honest generalization).
 
 ---
 
