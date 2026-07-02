@@ -340,4 +340,90 @@ A second finding: DeepPCB's official upstream split has 4 plates cross-cutting t
 
 ---
 
+## D-026 | 2026-07-02 | Ablation grid expanded to 6 runs (two vanilla-100 baselines)
+**Decision:** The ablation grid is 6 runs, not 5. Two vanilla-100 cells are included:
+(a) vanilla_adam_ciou_100 — optimizer matched to ca_adam_ciou, isolating CA as the
+single variable for a clean CA-vs-no-CA comparison at equal optimizer/loss settings.
+(b) vanilla_adamw_ciou_100 — optimizer matched to the Day 4b/Day 5 5-epoch smoke run,
+serving as an "out of the box" headroom baseline comparable to the honest smoke artifact
+(artifacts/day5_honest_smoke/). Both vanilla cells use model=yolo11n.yaml (stock, no CA)
+and iou_type=ciou. Ultralytics per-optimizer defaults are used for lr0/momentum/
+weight_decay in all cells (no hard-fix); each config documents its optimizer choice
+inline so the defaults source is traceable.
+**Why:** A single vanilla-100 baseline cannot serve both purposes at once: isolating CA's
+contribution requires holding optimizer/loss fixed against the CA cells (Adam+CIoU), while
+preserving comparability with the already-committed 5-epoch smoke artifact requires
+matching that run's optimizer (AdamW, the smoke default). Splitting into two vanilla
+cells resolves this without compromising either comparison.
+**Alternatives considered:** Single vanilla-100 at AdamW only — rejected: leaves the CA
+ablation confounded by an optimizer difference (CA cells run Adam and SGD, not AdamW).
+Single vanilla-100 at Adam only — rejected: breaks continuity with the honest smoke
+baseline, which used AdamW.
+**Affects:** configs/ablation/*.yaml (Item 5), scripts/run_ablation.py, ablation report
+tables in the CVPR-style writeup.
+**Reversible?** Yes — dropping one vanilla cell costs a config file and a discussion
+paragraph, not a re-run of any other cell.
+
+## D-027 | 2026-07-02 | T4 wall-time optimization applied to all 6 ablation configs
+**Decision:** All 6 ablation configs (configs/ablation/*.yaml) set patience=20 (early
+stop if val mAP50 has not improved for 20 epochs; full curve up to the stop point is
+still recorded), cache='ram' (DeepPCB's ~800 train images fit comfortably in T4 RAM,
+eliminating per-epoch disk I/O), and batch=32 (up from the 16 used in the 5-epoch smoke;
+YOLOv11n at 640px fits comfortably in T4 15GB VRAM, giving roughly 1.5x epoch
+throughput).
+**Why:** DeepPCB is an easy benchmark — the 5-epoch smoke already hit mAP50=0.927
+(artifacts/day5_honest_smoke/), so all 6 runs are expected to saturate well before 100
+epochs; patience terminates early without affecting the reported best-epoch metrics.
+Free-tier Colab T4 sessions have a ~12-hour limit with silent disconnects; at the
+5-epoch smoke's per-epoch wall time, 6 uncapped 100-epoch runs would take an estimated
+~10 hours, leaving no margin for a disconnect-and-resume. The batch/cache changes
+compress this to an estimated ~4 hours, fitting inside one uninterrupted session.
+**Alternatives considered:** Leaving batch=16 (smoke-identical) — rejected: throughput
+too low to fit 6 runs in one session. Uncapped epochs (no patience) — rejected: wastes
+GPU quota re-training past convergence on an already-easy dataset.
+**Affects:** All 6 configs/ablation/*.yaml files, scripts/run_ablation.py, total Colab
+GPU-hours budget for Item 5.
+**Reversible?** Yes — patience/cache/batch are per-run config values; any cell can be
+re-run with different settings without affecting the others.
+**Report note:** batch=32 was chosen for training-time efficiency under session
+constraints; a larger batch may require learning-rate tuning in follow-up work (not
+applied here — Ultralytics per-optimizer LR defaults are used as-is, per D-026).
+
+---
+
+## D-028 | 2026-07-02 | Explicit lr0 per optimizer — supersedes D-026's LR clause
+**Decision:** Verified in Ultralytics 8.3.40's `build_optimizer()` (ultralytics/engine/
+trainer.py) that per-optimizer learning-rate selection only occurs when
+`optimizer='auto'`. With an explicit optimizer name (Adam, AdamW, SGD — as all 6
+ablation configs use), every run instead inherits `lr0=0.01` from
+`ultralytics/cfg/default.yaml`, an SGD-tuned value. This is ~10x too high for
+Adam/AdamW and would confound the optimizer-effect comparison in the ablation.
+lr0 is now set explicitly per config:
+- Adam cells (vanilla_adam_ciou_100, ca_adam_ciou, ca_adam_wiou): lr0=0.001
+- AdamW cells (vanilla_adamw_ciou_100): lr0=0.001
+- SGD cells (ca_sgd_ciou, ca_sgd_wiou): lr0=0.01 (matches default.yaml; made explicit
+  for the diff record and viva defense, not a behavior change)
+**Why:** Preserves the intent of D-026 ("Ultralytics per-optimizer defaults used for
+lr0... no hard-fix"), which was written under the mistaken assumption that Ultralytics
+auto-scales lr0 per optimizer outside of `optimizer='auto'`. D-028 is the concrete,
+verified implementation of that original intent, correcting D-026's LR clause without
+reopening the rest of that decision (six-cell grid, batch/cache/patience settings are
+unaffected).
+**Alternatives considered:** Leaving lr0 unset and accepting the SGD-tuned 0.01 for
+Adam/AdamW — rejected: makes the Adam-vs-SGD ablation cells confounded by an
+unintentional LR mismatch rather than a controlled optimizer comparison. Using
+`optimizer='auto'` for the Adam/AdamW cells to get Ultralytics' automatic LR — rejected:
+`auto` also silently overrides the *optimizer choice itself* (picks AdamW or SGD based
+on iteration count), which would break the ablation's control over which optimizer runs
+in which cell.
+**Affects:** All 6 configs/ablation/*.yaml files (adds one `lr0:` line each,
+immediately below `optimizer:`).
+**Reversible?** Yes — lr0 is a per-run config value; reverting to implicit lr0=0.01
+costs one line per config.
+**Report note:** Cite Ultralytics 8.3.40 `default.yaml` (lr0=0.01, SGD provenance) and
+standard Adam LR guidance (Kingma & Ba, 2014; Loshchilov & Hutter, 2019 for AdamW) as
+the basis for the explicit 0.001 Adam/AdamW value.
+
+---
+
 *DECISIONS.md v1 | Initialized 2026-06-14 | Append-only*

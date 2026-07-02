@@ -1,0 +1,41 @@
+# Ablation cell: ca_adam_ciou
+# D-026: CA cell matched to vanilla_adam_ciou_100 for single-variable CA-isolation
+# (CA present, Adam+CIoU held fixed against the vanilla-100(a) counterpart).
+# D-027: T4 wall-time optimization applied (patience=20, cache='ram', batch=32).
+#
+# Optimizer default source: optimizer is set explicitly below (not 'auto'), so
+# Ultralytics does NOT auto-select a per-optimizer lr0/momentum/weight_decay -- it
+# would otherwise apply the global ultralytics/cfg/default.yaml lr0=0.01 (SGD-tuned)
+# to any named optimizer. D-028 supersedes D-026's LR clause: lr0=0.001 is set
+# explicitly below for this Adam cell, per Kingma & Ba 2014 guidance, to avoid
+# confounding the optimizer-effect ablation with an SGD-tuned LR.
+
+name: ca_adam_ciou
+model: configs/models/yolov11n_ca.yaml
+iou_type: ciou   # DRIVER key, not a train() kwarg
+
+# Training kwargs (all passed to model.train())
+epochs: 100
+imgsz: 640
+batch: 32                # D-027
+workers: 2
+seed: 42
+optimizer: Adam
+lr0: 0.001               # D-028
+patience: 20             # D-027
+cache: 'ram'             # D-027
+save_period: -1          # save only last + best
+plots: true
+
+# D-018 augmentation policy (all off except fliplr)
+hsv_h: 0.0
+hsv_s: 0.0
+hsv_v: 0.0
+degrees: 0.0
+translate: 0.0
+scale: 0.0
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+mosaic: 0.0

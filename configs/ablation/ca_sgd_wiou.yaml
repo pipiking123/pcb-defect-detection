@@ -1,0 +1,41 @@
+# Ablation cell: ca_sgd_wiou
+# D-026: CA cell isolating loss function against ca_sgd_ciou (SGD+CA held fixed,
+# CIoU -> WIoU v3 swapped via iou_type). Together with ca_adam_ciou/ca_adam_wiou/
+# ca_sgd_ciou this completes the 2x2 (optimizer x loss) grid on top of CA.
+# D-027: T4 wall-time optimization applied (patience=20, cache='ram', batch=32).
+#
+# Optimizer default source: optimizer is set explicitly below (not 'auto'). Per
+# D-028 (supersedes D-026's LR clause), lr0=0.01 is set explicitly here too -- this
+# matches ultralytics/cfg/default.yaml's SGD-tuned value (default.yaml's own comment:
+# "lr0: SGD=1E-2, Adam=1E-3"), made explicit for the diff record and viva defense
+# rather than left implicit.
+
+name: ca_sgd_wiou
+model: configs/models/yolov11n_ca.yaml
+iou_type: wiou   # DRIVER key, not a train() kwarg
+
+# Training kwargs (all passed to model.train())
+epochs: 100
+imgsz: 640
+batch: 32                # D-027
+workers: 2
+seed: 42
+optimizer: SGD
+lr0: 0.01                # D-028
+patience: 20             # D-027
+cache: 'ram'             # D-027
+save_period: -1          # save only last + best
+plots: true
+
+# D-018 augmentation policy (all off except fliplr)
+hsv_h: 0.0
+hsv_s: 0.0
+hsv_v: 0.0
+degrees: 0.0
+translate: 0.0
+scale: 0.0
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+mosaic: 0.0
