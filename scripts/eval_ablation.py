@@ -369,8 +369,10 @@ def run_eval_pair(
     """
     pair_name = f"{run_name}__{test_set}"
     try:
+        print(f"[eval_ablation] evaluating {pair_name} on split='test' from {data_yaml_path}")
         results = model.val(
             data=str(data_yaml_path), imgsz=args.imgsz, batch=args.batch, conf=args.conf, iou=args.iou,
+            split="test",
             project=str(output_dir), name=pair_name, exist_ok=False, plots=True, save_json=True,
             verbose=True, seed=args.seed, device=args.device,
         )
