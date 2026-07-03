@@ -1,0 +1,13 @@
+# D-024 cleaned test set exclusion rule
+# These 4 plate IDs cross-cut trainval.txt / test.txt in DeepPCB and cause
+# validation leakage under image-level shuffling. Any test image whose ID
+# starts with one of these prefixes is excluded from the cleaned 478-image
+# supplementary test set.
+exclusion_plate_prefixes:
+  - "1300019"
+  - "2008529"
+  - "4400006"
+  - "9200011"
+expected_excluded_count: 22
+expected_remaining_count: 478
+source_decision: D-024
