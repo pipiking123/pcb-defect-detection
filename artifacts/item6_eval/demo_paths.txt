@@ -1,0 +1,4 @@
+/kaggle/input/datasets/wenzhong2/deeppcb-pcb-defect/deeppcb/images/test/00041200.jpg
+/kaggle/input/datasets/wenzhong2/deeppcb-pcb-defect/deeppcb/images/test/90100072.jpg
+/kaggle/input/datasets/wenzhong2/deeppcb-pcb-defect/deeppcb/images/test/90100010.jpg
+/kaggle/input/datasets/wenzhong2/deeppcb-pcb-defect/deeppcb/images/test/12100200.jpg

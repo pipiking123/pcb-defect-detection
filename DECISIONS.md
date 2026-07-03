@@ -424,6 +424,40 @@ costs one line per config.
 standard Adam LR guidance (Kingma & Ba, 2014; Loshchilov & Hutter, 2019 for AdamW) as
 the basis for the explicit 0.001 Adam/AdamW value.
 
+## D-029: Item 6 close-out — eval script post-fix Codex re-review and audit-artifact archival
+
+**Date:** 2026-07-03
+**Status:** Accepted
+**Context:**
+Item 6 (evaluation) was executed on Kaggle T4 at eval script commit `5c2178a`, which contains the `split="test"` fix for `model.val()`. The initial Codex review (D-023 workflow) was performed on the pre-fix commit `5ddf486`; the split bug was discovered post-review during first eval execution. After the fix landed at `5c2178a`, a post-fix Codex re-review was requested to confirm no regressions on the three prior MAJOR fixes (seed order, per-pair failure handling, metrics.json provenance) and to verify the fix itself.
+
+**Decision:**
+1. Accept the post-fix Codex re-review at `5c2178a` as the final code approval for Item 6.
+2. Archive the exact test YAMLs (`deeppcb_kaggle.yaml`, `deeppcb_kaggle_cleaned.yaml`), the cleaned test manifest (`cleaned_test_manifest.txt`), the final Kaggle eval outputs (`runs_eval/` — 12 metrics.json + summaries + Ultralytics artifacts + demo grids), and provenance files (`README.md`, `demo_paths.txt`) under `artifacts/item6_eval/` in the repo, so the audit trail is reproducible from a fresh clone.
+3. Defer the one remaining MINOR (dry-run creates output_dir before exiting) as cosmetic; does not affect reported metrics.
+
+**Codex re-review outcome (5c2178a):**
+- APPROVED WITHOUT CHANGES on the code path
+- One `model.val()` call site confirmed at line 375 with `split="test"` correctly passed
+- All three prior MAJOR fixes verified intact (seed order lines 704–716, per-pair failure handling lines 371–476 + 744–759, metrics.json provenance lines 403–412)
+- Only two MAJORs raised were audit-artifact gaps (missing YAMLs and eval outputs in repo checkout) — both closed by this commit
+- Verdict: "APPROVE WITH AUDIT-ARTIFACT FIXES"
+
+**Consequences:**
+- Item 6 code phase is closed. Final reported numbers (mAP50=0.9450 for ca_sgd_wiou standard; cleaned delta ~0.001) are defensible from a code-correctness standpoint.
+- Repo is now self-contained: examiner cloning `pipiking123/pcb-defect-detection` at HEAD can inspect both the eval script and its evidence without external downloads.
+- D-023 four-layer workflow (plan/write/review/approve) held across the full Item 6 lifecycle, including the post-fix re-review loop.
+
+**Files added under `artifacts/item6_eval/`:**
+- `configs/deeppcb_kaggle.yaml` — standard 500-image test YAML used at eval
+- `configs/deeppcb_kaggle_cleaned.yaml` — cleaned 478-image test YAML (D-024 supplementary)
+- `configs/cleaned_test_manifest.txt` — 22 excluded image IDs + SHA-256s
+- `runs_eval/` — 6 runs × 2 test sets = 12 pair outputs (metrics.json, curves, confusion matrices, val_batch predictions) + `summary_standard.csv` + `summary_cleaned.csv` + `eval_manifest.txt` + `demo/` cross-model grid
+- `README.md` — top-level provenance and headline results
+- `demo_paths.txt` — 4 demo image paths for reproducibility
+
+**Related decisions:** D-013 (Ultralytics pin), D-023 (four-layer workflow), D-024 (plate-aware split), D-025 (CA nano channel lock)
+
 ---
 
 *DECISIONS.md v1 | Initialized 2026-06-14 | Append-only*

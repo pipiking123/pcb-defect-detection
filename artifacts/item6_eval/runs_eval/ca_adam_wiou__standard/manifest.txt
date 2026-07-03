@@ -1,0 +1,20 @@
+Timestamp UTC: 2026-07-03T03:10:39.790821+00:00
+Git HEAD: 5c2178a647bb3ebd97bc4b5114158535143118cd
+Git dirty: False
+Ultralytics version: 8.3.40
+Torch version: 2.10.0+cu128
+CUDA version: 12.8
+Device: Tesla T4
+Python version: 3.12.13
+Run name: ca_adam_wiou
+Checkpoint: /kaggle/input/datasets/wenzhong2/pcb-ablation-weights/ablation/ca_adam_wiou/weights/best.pt
+Checkpoint SHA-256: f6626fa944796ccc17139fcd7f64e46960f39ace86d4bc891369be1f4b5850d2
+Train optimizer: Adam
+Train iou_type: wiou
+Test set: standard
+Data YAML: /kaggle/working/deeppcb_kaggle.yaml
+Data YAML SHA-256: 049b1f165db151cd1788e68de1b8209e506b33d5ab9644a8f7a77c029bc2736d
+Image count: 500
+Instance count: 3140
+Eval args: imgsz=640 batch=32 conf=0.001 iou=0.6 seed=42 device=0
+Results: mAP50=0.9347 mAP50-95=0.7443 precision=0.8913 recall=0.9036 fitness=0.7633

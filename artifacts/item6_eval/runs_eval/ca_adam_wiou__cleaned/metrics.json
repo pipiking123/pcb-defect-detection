@@ -1,0 +1,81 @@
+{
+  "run_name": "ca_adam_wiou",
+  "test_set": "cleaned",
+  "provenance": {
+    "timestamp_utc": "2026-07-03T03:10:39.790821+00:00",
+    "git_head": "5c2178a647bb3ebd97bc4b5114158535143118cd",
+    "git_dirty": false,
+    "ultralytics_version": "8.3.40",
+    "torch_version": "2.10.0+cu128",
+    "cuda_version": "12.8",
+    "python_version": "3.12.13",
+    "device": "Tesla T4",
+    "train_optimizer": "Adam",
+    "train_iou_type": "wiou"
+  },
+  "test_set_image_count": 478,
+  "test_set_instance_count": 2992,
+  "checkpoint": "/kaggle/input/datasets/wenzhong2/pcb-ablation-weights/ablation/ca_adam_wiou/weights/best.pt",
+  "checkpoint_sha256": "f6626fa944796ccc17139fcd7f64e46960f39ace86d4bc891369be1f4b5850d2",
+  "data_yaml": "/kaggle/working/deeppcb_kaggle_cleaned.yaml",
+  "data_yaml_sha256": "440eecbf0625bbf808c1e37404085449557919b0b0939c72d92e5aece6777794",
+  "overall": {
+    "mAP50": 0.933226127684831,
+    "mAP50-95": 0.7421466520421431,
+    "precision": 0.8896995820450976,
+    "recall": 0.9018988348959595,
+    "fitness": 0.761254599606412
+  },
+  "per_class": {
+    "open": {
+      "mAP50": 0.9578869849839085,
+      "mAP50-95": 0.6504702180245975,
+      "precision": 0.8842916463408705,
+      "recall": 0.9318541996830428,
+      "instances": 631
+    },
+    "short": {
+      "mAP50": 0.8293620127077224,
+      "mAP50-95": 0.5455221925356083,
+      "precision": 0.8306508006850505,
+      "recall": 0.7562723474742387,
+      "instances": 454
+    },
+    "mousebite": {
+      "mAP50": 0.9493166383678754,
+      "mAP50-95": 0.733862027118058,
+      "precision": 0.8955465301662056,
+      "recall": 0.9046762589928058,
+      "instances": 556
+    },
+    "spur": {
+      "mAP50": 0.9436998508622874,
+      "mAP50-95": 0.7218540826697486,
+      "precision": 0.9129285357354432,
+      "recall": 0.873736136354194,
+      "instances": 456
+    },
+    "copper": {
+      "mAP50": 0.9820323532151134,
+      "mAP50-95": 0.9419676738767055,
+      "precision": 0.9531649504402278,
+      "recall": 0.9669291220591126,
+      "instances": 442
+    },
+    "pin-hole": {
+      "mAP50": 0.9370589259720795,
+      "mAP50-95": 0.8592037180281415,
+      "precision": 0.8616150289027884,
+      "recall": 0.977924944812362,
+      "instances": 453
+    }
+  },
+  "eval_config": {
+    "imgsz": 640,
+    "batch": 32,
+    "conf": 0.001,
+    "iou": 0.6,
+    "seed": 42,
+    "device": "0"
+  }
+}

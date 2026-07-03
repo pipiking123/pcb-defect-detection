@@ -1,0 +1,10 @@
+Timestamp UTC: 2026-07-03T03:12:43.953584+00:00
+Git HEAD: 5c2178a647bb3ebd97bc4b5114158535143118cd
+Runs (alphabetical): ['ca_adam_ciou', 'ca_adam_wiou', 'ca_sgd_ciou', 'ca_sgd_wiou', 'vanilla_adam_ciou_100', 'vanilla_adamw_ciou_100']
+Demo conf: 0.25
+Demo grid: True
+Per-image summary:
+  00041200: gt=yes detections={ca_adam_ciou=5, ca_adam_wiou=5, ca_sgd_ciou=5, ca_sgd_wiou=5, vanilla_adam_ciou_100=6, vanilla_adamw_ciou_100=5}
+  90100072: gt=yes detections={ca_adam_ciou=5, ca_adam_wiou=4, ca_sgd_ciou=4, ca_sgd_wiou=4, vanilla_adam_ciou_100=4, vanilla_adamw_ciou_100=4}
+  90100010: gt=yes detections={ca_adam_ciou=12, ca_adam_wiou=13, ca_sgd_ciou=14, ca_sgd_wiou=14, vanilla_adam_ciou_100=12, vanilla_adamw_ciou_100=12}
+  12100200: gt=yes detections={ca_adam_ciou=12, ca_adam_wiou=11, ca_sgd_ciou=10, ca_sgd_wiou=10, vanilla_adam_ciou_100=11, vanilla_adamw_ciou_100=10}

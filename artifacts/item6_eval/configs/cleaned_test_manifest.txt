@@ -1,0 +1,38 @@
+Timestamp UTC: 2026-07-03T02:42:29.257235+00:00
+Git HEAD: 5ddf486e90d90ee7f2ed7a8a51fad8dfcaf03869
+Source decision: D-024
+Seed (recorded, not used -- filtering is deterministic): 42
+Dataset root: /kaggle/working/deeppcb_mirror
+Standard YAML: /kaggle/working/deeppcb_kaggle.yaml
+Output YAML: /kaggle/working/deeppcb_kaggle_cleaned.yaml
+Exclusion plate prefixes: ['1300019', '2008529', '4400006', '9200011']
+Standard test count: 500
+Excluded count: 22
+Remaining count: 478
+Cleaned list file: /kaggle/working/deeppcb_mirror/test_cleaned.txt
+Cleaned list SHA-256: e91035b9a58e77ff7a71bd09554151da711518b890cb69653b6bee2519898442
+Source test.txt: /kaggle/working/deeppcb_mirror/PCBData/test.txt
+Source test.txt SHA-256: d85c8e8ac2389c8fe2fd566fdbcdbbdd8a1f7f52b309eb111013dc886f142ca0
+Excluded image IDs (sorted):
+  13000198
+  13000199
+  20085291
+  20085292
+  20085293
+  20085294
+  20085295
+  20085296
+  20085297
+  20085298
+  20085299
+  44000060
+  44000061
+  92000111
+  92000112
+  92000113
+  92000114
+  92000115
+  92000116
+  92000117
+  92000118
+  92000119

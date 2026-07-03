@@ -315,4 +315,16 @@ The new Claude will have zero context drift if you do this. The blueprint + stat
 
 ---
 
+## Item 6 — Evaluation: COMPLETE
+
+- **Status:** Closed 2026-07-03
+- **Eval script commit:** `5c2178a` (Fix: use split='test' in model.val())
+- **Training runs commit:** `fb40c96`
+- **Execution:** Kaggle Tesla T4, torch 2.10.0, ultralytics 8.3.40
+- **Coverage:** 6 ablation runs × 2 test sets (500-image standard PRIMARY + 478-image cleaned SUPPLEMENTARY per D-024) + 4-image cross-model demo grid
+- **Headline result:** ca_sgd_wiou best on mAP50 both sets (standard 0.9450, cleaned 0.9438); vanilla_adam_ciou_100 edges on mAP50-95 (honest trade-off)
+- **Codex re-review:** APPROVED at 5c2178a (see D-029)
+- **Evidence archived at:** `artifacts/item6_eval/`
+- **Next:** Report drafting (structure first, then section-by-section)
+
 *PROJECT_STATE.md v1 | Initialized [date] | Updated daily*
