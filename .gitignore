@@ -30,3 +30,8 @@ runs/
 *.pth
 weights/
 /content/
+
+# Demo (not part of submission)
+demo_weights/
+demo_input/
+demo_output/
